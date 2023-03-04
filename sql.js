@@ -8,7 +8,8 @@ const db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sq
 
 function changeSocialCredits(Name,Value){
     db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR);`);
-    //db.run(`UPDATE ${tableName} SET credit = ${Value} WHERE name = ${Name};`);
+    db.run(`INSERT OR IGNORE INTO ${tableName} (credit, name) VALUES (${Value},'${Name}'); `);
+    db.run(`UPDATE ${tableName} SET user_name='${Name}', age=${Value} WHERE user_name='${Name}';`);
 }
 
 module.exports.changeSocialCredits = changeSocialCredits
