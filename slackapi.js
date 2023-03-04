@@ -39,13 +39,8 @@ class SlackBot {
         //Top 5 Users
         let msg = "Daily Most Compliant\n";
 
-        if(Top[0].credit == 0){
-            msg += "DATA N/A\n"
-        }
-        else{
-            for(let i = 0; i < 5; i++){
-                msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
-            }
+        for(let i = 0; i < 5; i++){
+            msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
         }
 
         //console.log(msg);
@@ -55,13 +50,8 @@ class SlackBot {
         //Lower 5 Users
         msg += "\n\nDaily Least Compliant\n";
 
-        if(Top[Top.length - 1].credit == 0){
-            msg += "DATA N/A\n"
-        }
-        else{
-            for(let i = Top.length - 1; i > Top.length - 6; i++){
-                msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
-            }
+        for(let i = Top.length - 1; i > Top.length - 6; i++){
+            msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
         }
 
         await this.SendMessage(ChannelID,msg);
