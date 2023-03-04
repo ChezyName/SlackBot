@@ -15,6 +15,22 @@ class SlackBot {
         return result;
     }
 
+    async sendScoutingMessage(){
+
+    }
+
+    async getMembersInChannel(ChannelID){
+        let totalMembers = [];
+        let data = await this.web.conversations.members({channel: ChannelID});
+        let members = data.members;
+        for(let i = 0; i < members.length; i++){
+            let info = await this.web.users.info({user: members[i]});
+            //console.log(i +".) " + info.user.profile.real_name);
+            if(!info.user.is_bot) totalMembers.push(info.user.real_name);
+        }
+        return totalMembers;
+    }
+
     async getAllUsers(){
         return this.web.users.list();
     }

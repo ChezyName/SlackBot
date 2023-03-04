@@ -9,20 +9,20 @@ const Client = new SlackBot(token);
 
 //Top().then((data) => { Client.SendTop("C04SCDQEKS7",data);});
 
-function init() {
-    Client.getAllUsers().then((result) => {
-        for(let i = 0; i < result.members.length; i++){
-            let user = result.members[i];
-            //console.log(user);
-            let name = user.profile.real_name;
-            if(user.deleted == false && user.is_bot == false){
-                changeSocialCredits(name,0);
-            }
-        }
-    });
+async function init() {
+    let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
+    for(let i = 0; i < members.length; i++){
+        //console.log(user);
+        let name = members[i];
+        changeSocialCredits(name,0);
+    }
 }
 
 
-function main(){
+async function main(){
     
 }
+
+
+init();
+main();
