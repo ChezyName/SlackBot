@@ -8,6 +8,7 @@ class SlackBot {
     }
 
     async SendMessage(ChannelID,Text){
+        console.log("Sending MSG To " + ChannelID + " : " + Text);
         const result = await this.web.chat.postMessage({
             text: Text,
             channel: ChannelID,
@@ -50,9 +51,12 @@ class SlackBot {
         //Lower 5 Users
         msg += "\n\nDaily Least Compliant\n";
 
-        for(let i = Top.length - 1; i > Top.length - 6; i++){
+        for(let i = Top.length - 1; i > Top.length - 6; i--){
             msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
         }
+
+        console.log("Printed MSG")
+        
 
         await this.SendMessage(ChannelID,msg);
     }

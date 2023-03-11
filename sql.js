@@ -29,7 +29,7 @@ async function getTop(){
             function(err,row) {
                 if(row != null){
                     topContenders.push(row);
-                    console.log(row);
+                    //console.log(row);
                 }
             },
             function() {
