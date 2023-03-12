@@ -1,4 +1,5 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
+const {OldDate} = require('./util')
 
 class TBA_API{
     constructor(TBAKEY,TeamKey){
@@ -18,12 +19,15 @@ class TBA_API{
         let year = new Date().getFullYear();
         //console.log("Current Year is " + year);
         let events = await this.getData("/team/"+'frc'+this.team+"/events/"+year+"/simple");
-        console.log("EVENTS: ")
-        console.log(events);
-        //console.log("\n our current events for "+year+" are:")
+        //console.log("EVENTS: ")
         //console.log(events);
-        //console.log("\n");
-        return events[0];
+        for(let i = 0; i < events.length; i++){
+            let event = events[i]
+            let startingDate = new Date(event.start_date)
+            if(OldDate()){
+                
+            }
+        }
     }
 
     async getYearEvents(){
