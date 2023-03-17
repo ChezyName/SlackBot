@@ -9,7 +9,7 @@ class SlackBot {
     }
 
     async SendMessage(ChannelID,Text){
-        console.log("Sending MSG To " + ChannelID + " : " + Text);
+        //console.log("Sending MSG To " + ChannelID + " : " + Text);
         const result = await this.web.chat.postMessage({
             text: Text,
             channel: ChannelID,

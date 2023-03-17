@@ -3,6 +3,7 @@ const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
 const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
+const fs = require('fs')
 
 // Read a token from the environment variables
 const Client = new SlackBot(process.env.SLACK_TOKEN);
@@ -14,12 +15,21 @@ async function TopAndLowerFive(){
 }
 
 async function main(){
+    /*
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatch(currentEvent.key.replace('2023','2022'));
         console.log(cMatch);
     }
+    */
+
+    let json = JSON.parse(fs.readFileSync('./scouters.json'));
+    for(let i = 0; i < json.length; i++){
+        let person = json[i]
+        Client.DMPerson(person,"Oi Mate, You Best Be On Your Best Behavior! Mate!")
+    }
+
 }
 
 
