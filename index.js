@@ -14,22 +14,25 @@ async function TopAndLowerFive(){
     Top().then((data) => { Client.SendTop(process.env.ScoutingChannelID,data);});
 }
 
-async function main(){
-    /*
+async function sendScoutingMatches() {
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatch(currentEvent.key.replace('2023','2022'));
         console.log(cMatch);
     }
-    */
+}
 
-    let json = JSON.parse(fs.readFileSync('./scouters.json'));
-    for(let i = 0; i < json.length; i++){
-        let person = json[i]
-        Client.DMPerson(person,"Oi Mate, You Best Be On Your Best Behavior! Mate!")
+async function SixAMDaily(){
+    var hrs = new Date().getHours();
+    if(hrs == 6){
+        TopAndLowerFive();
     }
+}
 
+async function main(){
+    SixAMDaily();
+    sendScoutingMatches();
 }
 
 
@@ -42,7 +45,6 @@ async function init() {
         changeSocialCreditsID(name,0,members[i].id);
     }
 
-    //TopAndLowerFive();
     main();
 }
 
