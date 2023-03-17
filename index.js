@@ -14,24 +14,23 @@ async function TopAndLowerFive(){
 }
 
 async function main(){
-    let currentMatch = await TBA.getCurrentEvent(); 
+    Client.DMPerson("Sadiq Ahmed","Whats Up From Code!");
+    let currentMatch = await TBA.getCurrentEvent();
+    if(currentMatch != null){
+        //Match for Today
+        console.log(currentMatch);
+    }
 }
 
 
 async function init() {
     let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
-    const LoadingBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
-    LoadingBar.start(members.length, 0);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
         let name = members[i].name;
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
-        LoadingBar.update(i);
     }
-    
-    LoadingBar.update(members.length);
-    LoadingBar.stop();
 
     //TopAndLowerFive();
     main();

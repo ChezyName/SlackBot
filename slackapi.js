@@ -1,6 +1,6 @@
 const { WebClient } = require('@slack/web-api');
 const cliProgress = require('cli-progress');
-
+const { getIDfromName } = require('./sql')
 
 class SlackBot {
     constructor(AppID) {
@@ -15,6 +15,11 @@ class SlackBot {
             channel: ChannelID,
         });
         return result;
+    }
+
+    async DMPerson(Name,MSG){
+        let ID = await getIDfromName(Name);
+        this.SendMessage(ID,MSG);
     }
 
     async getMembersInChannel(ChannelID){

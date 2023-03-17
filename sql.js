@@ -7,6 +7,18 @@ const db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sq
     db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR);`);
 })
 
+async function getIDfromName(Name){
+    return new Promise((resolve) => {
+        db.each(`SELECT credit, name, id FROM ${tableName} WHERE name = '${Name}'`,
+        function(err, row) {
+            if(row != null && row.name != null && row.credit != null && row.id != null){
+                console.log(row.name,row.id);
+                resolve(row.id);
+            }
+        });
+    })
+}
+
 function changeSocialCreditsID(Name,Value,id){
     db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR);`);
     db.run(`INSERT INTO ${tableName}(credit,name,id)` 
@@ -52,6 +64,8 @@ async function getTop(){
             });
     })
 }
+
+module.exports.getIDfromName = getIDfromName;
 module.exports.changeSocialCredits = changeSocialCredits
 module.exports.changeSocialCreditsID = changeSocialCreditsID
 module.exports.Top = getTop
