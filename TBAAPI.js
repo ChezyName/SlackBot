@@ -77,6 +77,19 @@ class TBA_API{
 
         return {blue: nBlue, red: nRed};
     }
+
+    async getCurrentMatch(eventKey){
+        let matches = await this.getMatches(eventKey);
+        let lastMatch = matches[0];
+        let timeMS = Date.now();
+
+        for(let i = 0; i < matches.length; i++){
+            let matchTime = matches[i].predicted_time;
+            if((matchTime-15000) < timeMS && timeMS < (matchTime+15000)){
+                return lastMatch;
+            }
+        }
+    }
 }
 
 module.exports = TBA_API

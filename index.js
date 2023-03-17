@@ -14,11 +14,11 @@ async function TopAndLowerFive(){
 }
 
 async function main(){
-    Client.DMPerson("Sadiq Ahmed","Whats Up From Code!");
-    let currentMatch = await TBA.getCurrentEvent();
-    if(currentMatch != null){
+    let currentEvent = await TBA.getCurrentEvent();
+    if(currentEvent != null){
         //Match for Today
-        console.log(currentMatch);
+        let cMatch = await TBA.getCurrentMatch(currentEvent.key.replace('2023','2022'));
+        console.log(cMatch);
     }
 }
 
