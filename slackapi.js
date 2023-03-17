@@ -1,4 +1,5 @@
 const { WebClient } = require('@slack/web-api');
+const cliProgress = require('cli-progress');
 
 
 class SlackBot {
@@ -16,19 +17,22 @@ class SlackBot {
         return result;
     }
 
-    async sendScoutingMessage(){
-
-    }
-
     async getMembersInChannel(ChannelID){
         let totalMembers = [];
         let data = await this.web.conversations.members({channel: ChannelID});
         let members = data.members;
+        const LoadingBar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+        LoadingBar.start(members.length, 0);
         for(let i = 0; i < members.length; i++){
             let info = await this.web.users.info({user: members[i]});
+            let id = info.user.id;
+            LoadingBar.update(i);
+            //console.log(id);
             //console.log(i +".) " + info.user.profile.real_name);
-            if(!info.user.is_bot) totalMembers.push(info.user.real_name);
+            if(!info.user.is_bot) totalMembers.push({name: info.user.real_name, id: id});
         }
+        LoadingBar.update(members.length);
+        LoadingBar.stop();
         return totalMembers;
     }
 

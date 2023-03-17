@@ -1,7 +1,7 @@
 require("dotenv").config();
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
-const {changeSocialCredits, Top} = require('./sql');
+const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
 
 // Read a token from the environment variables
@@ -14,8 +14,7 @@ async function TopAndLowerFive(){
 }
 
 async function main(){
-    let currentMatch = await TBA.getCurrentEvent();
-    console.log("Current Match: " + currentMatch);   
+    let currentMatch = await TBA.getCurrentEvent(); 
 }
 
 
@@ -25,8 +24,9 @@ async function init() {
     LoadingBar.start(members.length, 0);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
-        let name = members[i];
-        changeSocialCredits(name,0);
+        let name = members[i].name;
+        if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
+        changeSocialCreditsID(name,0,members[i].id);
         LoadingBar.update(i);
     }
     

@@ -1,5 +1,5 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
-const {OldDate} = require('./util')
+const { BetweenDates } = require('./util')
 
 class TBA_API{
     constructor(TBAKEY,TeamKey){
@@ -24,10 +24,13 @@ class TBA_API{
         for(let i = 0; i < events.length; i++){
             let event = events[i]
             let startingDate = new Date(event.start_date)
-            if(OldDate()){
-                
+            let endingDate = new Date(event.end_date)
+            if(BetweenDates(startingDate,endingDate)){
+                return event;
             }
         }
+        console.log("No Events Found For Date");
+        return null;
     }
 
     async getYearEvents(){
