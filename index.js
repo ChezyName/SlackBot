@@ -18,7 +18,7 @@ async function sendScoutingMatches() {
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
         //Match for Today
-        let cMatch = await TBA.getCurrentMatch(currentEvent.key.replace('2023','2022'));
+        let cMatch = await TBA.getCurrentMatch(currentEvent.key);
         console.log(cMatch);
     }
 }
@@ -33,6 +33,7 @@ async function SixAMDaily(){
 async function main(){
     SixAMDaily();
     sendScoutingMatches();
+    Client.DMPerson("Jackson Horwath","SUCK MY DICK!");
 }
 
 
