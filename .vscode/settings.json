@@ -1,4 +1,0 @@
-{
-    "appService.defaultWebAppToDeploy": "/subscriptions/94286dce-b2f9-40b4-9692-e7551dcd2a73/resourceGroups/ScoutingBot/providers/Microsoft.Web/sites/ScoutingBot",
-    "appService.deploySubpath": "."
-}

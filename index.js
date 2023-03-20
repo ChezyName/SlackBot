@@ -1,9 +1,19 @@
+const hostname = '0.0.0.0';
+const port = process.env.PORT || 3000;
+
 require("dotenv").config();
+const http = require('http');
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
 const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
+
+const server = http.createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('SLACK SERVER');
+});
 
 // Read a token from the environment variables
 const Client = new SlackBot(process.env.SLACK_TOKEN);
@@ -30,10 +40,11 @@ async function SixAMDaily(){
     }
 }
 
-async function main(){
-    SixAMDaily();
-    sendScoutingMatches();
-    Client.DMPerson("Jackson Horwath","SUCK MY DICK!");
+async function main(times){
+    //SixAMDaily();
+    //sendScoutingMatches();
+    Client.DMPerson("Sadiq Ahmed","Hello From GCP!");
+    setTimeout(main(times++),1500);
 }
 
 
@@ -46,8 +57,11 @@ async function init() {
         changeSocialCreditsID(name,0,members[i].id);
     }
 
-    main();
+    main(0);
 }
 
 
+server.listen(port, hostname, () => {
+    console.log(`Server running at http://${hostname}:${port}/`);
+});
 init();
