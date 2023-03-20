@@ -18,5 +18,5 @@ ScoutingChannelID=
 TBA=
 ```
 
-Send to GCP
-`gcloud compute scp --recurse ./ VM_INSTANCE:`
+Send to GCP Root Folder
+`gcloud compute scp --recurse ./ USERNAME@VM_INSTANCE:`

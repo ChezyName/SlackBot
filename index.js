@@ -41,10 +41,11 @@ async function SixAMDaily(){
 }
 
 async function main(times){
-    //SixAMDaily();
-    //sendScoutingMatches();
-    Client.DMPerson("Sadiq Ahmed","Hello From GCP!");
-    setTimeout(main(times++),1500);
+    SixAMDaily();
+    sendScoutingMatches();
+    Client.DMPerson("Sadiq Ahmed","Hello From GCP! @ " + times);
+    //Runs Every Minute
+    setTimeout(main(times++),60000);
 }
 
 
