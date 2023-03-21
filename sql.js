@@ -4,7 +4,7 @@ const tableName = "socialcredits";
 const db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE | sqlite3.OPEN_FULLMUTEX,(err) => {
     if(err) return console.error(err.message);
     console.log("Connected to SQL Database");
-    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR);`);
+    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
 })
 
 async function getIDfromName(Name){
@@ -20,9 +20,9 @@ async function getIDfromName(Name){
 }
 
 function changeSocialCreditsID(Name,Value,id){
-    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR);`);
-    db.run(`INSERT INTO ${tableName}(credit,name,id)` 
-    + `SELECT ${Value}, '${Name}', '${id}'`
+    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
+    db.run(`INSERT INTO ${tableName}(credit,name,id,scoutmissed)` 
+    + `SELECT ${Value}, '${Name}', '${id}', 0 `
     + `WHERE NOT EXISTS(SELECT 1 FROM ${tableName} WHERE name = '${Name}');`);
     
     db.each(`SELECT credit, name, id FROM ${tableName} WHERE name = '${Name}'`,
@@ -34,8 +34,18 @@ function changeSocialCreditsID(Name,Value,id){
         });
 }
 
+function changeScoutMissed(Name,AddValue){    
+    db.each(`SELECT credit, name, id, scoutmissed FROM ${tableName} WHERE name = '${Name}'`,
+        function(err, row) {
+            if(row != null && row.name != null && row.credit != null && row.id != null){
+                //console.log(row.name + " : " + row.credit);
+                db.run(`UPDATE ${tableName} SET scoutmissed=${row.scoutmissed + AddValue} WHERE name='${Name}';`);
+            }
+        });
+}
+
 function changeSocialCredits(Name,Value){
-    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR);`);
+    db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
     db.run(`INSERT INTO ${tableName}(credit,name)` 
     + `SELECT ${Value}, '${Name}'`
     + `WHERE NOT EXISTS(SELECT 1 FROM ${tableName} WHERE name = '${Name}');`);
@@ -69,3 +79,4 @@ module.exports.getIDfromName = getIDfromName;
 module.exports.changeSocialCredits = changeSocialCredits
 module.exports.changeSocialCreditsID = changeSocialCreditsID
 module.exports.Top = getTop
+module.exports.changeScoutMissed = changeScoutMissed;

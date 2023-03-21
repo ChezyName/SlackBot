@@ -5,12 +5,12 @@ require("dotenv").config();
 const http = require('http');
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
-const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
+const {changeScoutMissed, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
-const {getHour} = require('./util');
+const {getHour,sleep} = require('./util');
 
-console.log("Time " + Date.now());
+console.log("Server Started @ " + new Date().toUTCString());
 
 const server = http.createServer((req, res) => {
     if(req.method == "POST"){
@@ -20,6 +20,8 @@ const server = http.createServer((req, res) => {
         });
 
         req.on("end", function(){
+            //console.log(body);
+            changeScoutMissed(body.name,1);
             res.writeHead(200, { "Content-Type": "text/html" });
             res.end(body);
         });
@@ -53,7 +55,7 @@ async function sendScoutingMatches() {
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatch(currentEvent.key);
-        console.log(cMatch);
+        //console.log(cMatch);
     }
 }
 
@@ -68,18 +70,12 @@ async function SixAMDaily(){
 }
 
 async function main(){
-    //await Client.GiveLink("Dominic",2846,1);
-
-    /*
     while(true){
         await SixAMDaily();
         await sendScoutingMatches();
-        await Client.DMPerson("Sadiq Ahmed","Hello From GCP! @ " + times);
-        times++;
-        //Runs Every Minute
-        await sleep(60000);
+        //Runs Every 15s
+        await sleep(15000);
     }
-    */
 }
 
 
