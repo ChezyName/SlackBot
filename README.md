@@ -20,3 +20,5 @@ TBA=
 
 Send to GCP Root Folder
 `gcloud compute scp --recurse ./ USERNAME@VM_INSTANCE:`
+
+Make Sure To Enable Port 3000 in The Firewall Settings Of The VM

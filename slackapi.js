@@ -1,6 +1,6 @@
 const { WebClient } = require('@slack/web-api');
 const cliProgress = require('cli-progress');
-const { getIDfromName } = require('./sql')
+const { getIDfromName, changeSocialCredits } = require('./sql')
 
 class SlackBot {
     constructor(AppID) {
@@ -20,6 +20,12 @@ class SlackBot {
     async DMPerson(Name,MSG){
         let ID = await getIDfromName(Name);
         this.SendMessage(ID,MSG);
+    }
+
+    async GiveLink(Name,TeamNum,MatchNum) {
+        const link = process.env.SITELINK + '?team=' + TeamNum + "&match=" + MatchNum + "&name=" + Name.replace(" ","_");
+        this.DMPerson(Name,`You Are Required To Scout Team #${TeamNum} For Match #${MatchNum}\n${link}`);
+        changeSocialCredits(Name,-process.env.BAD_BEHAVIOR);
     }
 
     async getMembersInChannel(ChannelID){

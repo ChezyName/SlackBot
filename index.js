@@ -8,11 +8,33 @@ const TBA_API = require("./TBAAPI")
 const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
+const {getIPAddress} = require('./util');
 
 const server = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end('SLACK SERVER');
+    if(req.method == "POST"){
+        var body = "";
+        req.on("data", function (chunk) {
+            body += chunk;
+        });
+
+        req.on("end", function(){
+            res.writeHead(200, { "Content-Type": "text/html" });
+            res.end(body);
+        });
+    }
+    else{
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'text/plain');
+
+        let str = "USERNAME : CREDIT VALUE\n";
+        Top().then((members) => {
+            for(var i = 0; i < members.length; i++){
+                var user = members[i];
+                str += user.name + " : " + user.credit + "\n";
+            }
+            res.end(str);
+        })
+    }
 });
 
 // Read a token from the environment variables
@@ -33,19 +55,29 @@ async function sendScoutingMatches() {
     }
 }
 
+didToday = false;
 async function SixAMDaily(){
     var hrs = new Date().getHours();
-    if(hrs == 6){
+    if(hrs == 6 && didToday == false){
         TopAndLowerFive();
+        didToday = true;
     }
+    else if(hrs != 6) didToday = false
 }
 
-async function main(times){
-    SixAMDaily();
-    sendScoutingMatches();
-    Client.DMPerson("Sadiq Ahmed","Hello From GCP! @ " + times);
-    //Runs Every Minute
-    setTimeout(main(times++),60000);
+async function main(){
+    //await Client.GiveLink("Dominic",2846,1);
+
+    /*
+    while(true){
+        await SixAMDaily();
+        await sendScoutingMatches();
+        await Client.DMPerson("Sadiq Ahmed","Hello From GCP! @ " + times);
+        times++;
+        //Runs Every Minute
+        await sleep(60000);
+    }
+    */
 }
 
 
@@ -58,7 +90,7 @@ async function init() {
         changeSocialCreditsID(name,0,members[i].id);
     }
 
-    main(0);
+    main();
 }
 
 
