@@ -35,6 +35,13 @@ function getIPAddress(){
   return results;
 }
 
+function getCentralTime(){
+  let time = (new Date().getUTCHours() - 5)
+  if(time <= 0) time += 12;
+  return time;
+}
+
 module.exports.BetweenDates = BetweenDates
 module.exports.sleep = sleep
 module.exports.getIPAddress = getIPAddress;
+module.exports.getHour = getCentralTime;

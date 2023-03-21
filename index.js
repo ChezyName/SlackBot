@@ -8,7 +8,9 @@ const TBA_API = require("./TBAAPI")
 const {changeSocialCredits, Top, changeSocialCreditsID} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
-const {getIPAddress} = require('./util');
+const {getHour} = require('./util');
+
+console.log("Time " + Date.now());
 
 const server = http.createServer((req, res) => {
     if(req.method == "POST"){
@@ -57,7 +59,7 @@ async function sendScoutingMatches() {
 
 didToday = false;
 async function SixAMDaily(){
-    var hrs = new Date().getHours();
+    var hrs = getHour();
     if(hrs == 6 && didToday == false){
         TopAndLowerFive();
         didToday = true;
@@ -95,6 +97,6 @@ async function init() {
 
 
 server.listen(port, hostname, () => {
-    console.log(`Server running at http://${hostname}:${port}/`);
+    console.log(`Server running at http://${process.env.SERVER_IP}:${port}/`);
 });
 init();

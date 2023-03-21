@@ -23,7 +23,7 @@ class SlackBot {
     }
 
     async GiveLink(Name,TeamNum,MatchNum) {
-        const link = process.env.SITELINK + '?team=' + TeamNum + "&match=" + MatchNum + "&name=" + Name.replace(" ","_");
+        const link = process.env.SITELINK + '?team=' + TeamNum + "&match=" + MatchNum + "&name=" + Name.replace(" ","_") + "&server=" + process.env.SERVER_IP;
         this.DMPerson(Name,`You Are Required To Scout Team #${TeamNum} For Match #${MatchNum}\n${link}`);
         changeSocialCredits(Name,-process.env.BAD_BEHAVIOR);
     }
