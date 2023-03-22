@@ -5,12 +5,13 @@ require("dotenv").config();
 const http = require('http');
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
-const {changeScoutMissed, Top, changeSocialCreditsID} = require('./sql');
+const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
 const {getHour,sleep} = require('./util');
 
 console.log("Server Started @ " + new Date().toUTCString());
+
 
 const server = http.createServer((req, res) => {
     if(req.method == "POST"){
@@ -50,29 +51,35 @@ async function TopAndLowerFive(){
     Top().then((data) => { Client.SendTop(process.env.ScoutingChannelID,data);});
 }
 
+async function onDriveTeam(){
+    TBA.MatchesWonLost();
+}
+
 async function sendScoutingMatches() {
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatch(currentEvent.key);
-        //console.log(cMatch);
+        console.log(cMatch);
     }
 }
 
 didToday = false;
 async function SixAMDaily(){
     var hrs = getHour();
-    if(hrs == 6 && didToday == false){
+    //console.log("Current Time: " + hrs);
+    if(hrs == 21 && didToday == false){
         TopAndLowerFive();
         didToday = true;
     }
-    else if(hrs != 6) didToday = false
+    else if(hrs != 21) didToday = false
 }
 
 async function main(){
     while(true){
-        await SixAMDaily();
-        await sendScoutingMatches();
+        //await SixAMDaily();
+        //await sendScoutingMatches();
+        await onDriveTeam();
         //Runs Every 15s
         await sleep(15000);
     }

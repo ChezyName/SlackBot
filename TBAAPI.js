@@ -1,10 +1,27 @@
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const { BetweenDates } = require('./util')
+const {changeSocialCredits} = require('./sql')
+
+const DriveTeamMembers = process.env.DriveTeamMembers.split(':');
+
+function LosePointsDrive(){
+    //console.log("LOST");
+    for(var i = 0; i < DriveTeamMembers.length; i++){
+        changeSocialCredits(DriveTeamMembers[i],process.env.LOSS);
+    }
+}
+
+function gainPointsDrive(){
+    //console.log("WON");
+    for(var i = 0; i < DriveTeamMembers.length; i++){
+        changeSocialCredits(DriveTeamMembers[i],process.env.WIN);
+    }
+}
 
 class TBA_API{
     constructor(TBAKEY,TeamKey){
         this.key = TBAKEY;
-        this.team = TeamKey;
+        this.team = 'frc'+TeamKey;
     }
 
     async getData(path=""){
@@ -76,6 +93,30 @@ class TBA_API{
         }
 
         return {blue: nBlue, red: nRed};
+    }
+
+    async getTeamFromMatch(matchData){
+        let nBlue = matchData["alliances"]["blue"]["team_keys"];
+        let nRed = matchData["alliances"]["red"]["team_keys"];
+
+        return {blue: nBlue, red: nRed};
+    }
+
+    async MatchesWonLost(){
+        let matches = await this.getOurMatches('2022mndu2');
+        for(var i = 0; i < matches.length; i++){
+            let match = matches[i];
+            if(!(match['winning_alliance'] == 'red' || match['winning_alliance'] == 'blue')) return;
+            let teams = await this.getTeamFromMatch(match);
+            if(match['winning_alliance'] == 'red'){
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) LosePointsDrive();
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) gainPointsDrive();
+            }
+            else if(match['winning_alliance'] == 'blue'){
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) gainPointsDrive();
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) LosePointsDrive();
+            }
+        }
     }
 
     async getCurrentMatch(eventKey){

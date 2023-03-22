@@ -36,8 +36,8 @@ function getIPAddress(){
 }
 
 function getCentralTime(){
-  let time = (new Date().getUTCHours() - 5)
-  if(time <= 0) time += 12;
+  let time = (new Date().toLocaleTimeString("en-GB", { timeZone: "America/Chicago" }))
+  time = time.substring(0, time.indexOf(":"))
   return time;
 }
 

@@ -55,7 +55,7 @@ class SlackBot {
 
     async SendTop(ChannelID,Top){
         //Top 5 Users
-        let msg = "Daily Most Compliant\n";
+        let msg = "Good Morning <!here>\nDaily Most Compliant\n";
 
         for(let i = 0; i < 5; i++){
             msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
@@ -72,7 +72,7 @@ class SlackBot {
             msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
         }
 
-        console.log("Printed MSG")
+        //console.log("Printed MSG")
         
 
         await this.SendMessage(ChannelID,msg);
