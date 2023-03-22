@@ -4,17 +4,11 @@ const {changeSocialCredits} = require('./sql')
 
 const DriveTeamMembers = process.env.DriveTeamMembers.split(':');
 
-function LosePointsDrive(){
-    //console.log("LOST");
-    for(var i = 0; i < DriveTeamMembers.length; i++){
-        changeSocialCredits(DriveTeamMembers[i],process.env.LOSS);
-    }
-}
 
-function gainPointsDrive(){
-    //console.log("WON");
+function gainPointsDrive(Points){
     for(var i = 0; i < DriveTeamMembers.length; i++){
-        changeSocialCredits(DriveTeamMembers[i],process.env.WIN);
+        console.log(DriveTeamMembers[i] + " : " + Points)
+        changeSocialCredits(DriveTeamMembers[i],Points);
     }
 }
 
@@ -103,20 +97,23 @@ class TBA_API{
     }
 
     async MatchesWonLost(){
+        let eventKey = await this.getCurrentEvent();
         let matches = await this.getOurMatches('2022mndu2');
+        let totalPoints = 0;
         for(var i = 0; i < matches.length; i++){
             let match = matches[i];
             if(!(match['winning_alliance'] == 'red' || match['winning_alliance'] == 'blue')) return;
             let teams = await this.getTeamFromMatch(match);
             if(match['winning_alliance'] == 'red'){
-                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) LosePointsDrive();
-                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) gainPointsDrive();
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += process.env.LOSS;
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += process.env.WIN;
             }
             else if(match['winning_alliance'] == 'blue'){
-                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) gainPointsDrive();
-                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) LosePointsDrive();
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += process.env.WIN;
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += process.env.LOSS;
             }
         }
+        gainPointsDrive(totalPoints);
     }
 
     async getCurrentMatch(eventKey){

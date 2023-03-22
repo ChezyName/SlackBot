@@ -26,7 +26,10 @@ GOOD_BEHAVIOR= Points Gained On Scouting
 
 WIN= Points Lost To Drive Team When Losing A Match
 LOSS= Points Gained To Drive Team When Losing A Match 
+
+DriveTeamMembers="DRIVE MEMBER A:DRIVE MEMBER B:DRIVE MEMBER C"
 ```
+> For each Drive Team Member add a `:` for the program to split / indicate the persons name
 
 # **Using GCP (Google Cloud Platform)**
 ## Init
