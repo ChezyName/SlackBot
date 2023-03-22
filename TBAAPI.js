@@ -105,12 +105,12 @@ class TBA_API{
             if(!(match['winning_alliance'] == 'red' || match['winning_alliance'] == 'blue')) return;
             let teams = await this.getTeamFromMatch(match);
             if(match['winning_alliance'] == 'red'){
-                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += process.env.LOSS;
-                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += process.env.WIN;
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += parseInt(process.env.LOSS);
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += parseInt(process.env.WIN);
             }
             else if(match['winning_alliance'] == 'blue'){
-                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += process.env.WIN;
-                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += process.env.LOSS;
+                if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += parseInt(process.env.WIN);
+                else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += parseInt(process.env.LOSS);
             }
         }
         gainPointsDrive(totalPoints);

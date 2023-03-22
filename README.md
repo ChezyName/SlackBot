@@ -35,7 +35,7 @@ DriveTeamMembers="DRIVE MEMBER A:DRIVE MEMBER B:DRIVE MEMBER C"
 ## Init
 Open The GoogleCloudTerminal or SSH into it.
 Then Download and install NodeJS and NPM by running
-`sudo apt-get install node npm`
+`sudo apt install nodejs npm`
 
 ## Uploading Files
 > You Need GoogleCloud Installed. You Can Download [Here](https://cloud.google.com/sdk/docs/install)
@@ -54,7 +54,7 @@ To Send All Files In The Current Folder `./*` To The Base Folder Of GCP
 ## Firewall Settings
 In order for the Server to be enabled and to send data over to the server *(GCP Compute)*. We need to enable specific Firewall Settings.
 1. Open The Firewall Settings In GCP Console
-   1. Open GCP [Here](https://console.cloud.google.com/)
+   1. Open GCP [Here](https://console.cloud.google.com/networking/firewalls)
    2. Open VPC Network In GCP
    3. Go To The Firewall Settings
 2. In The Firewalls Add New Rule

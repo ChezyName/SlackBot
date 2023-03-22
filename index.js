@@ -31,7 +31,7 @@ const server = http.createServer((req, res) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
 
-        let str = "USERNAME : CREDIT VALUE\n";
+        let str = "USERNAME : CREDIT VALUE @ " + (new Date().toLocaleTimeString("en-GB", { timeZone: "America/Chicago" })) + " CT.\n";
         Top().then((members) => {
             for(var i = 0; i < members.length; i++){
                 var user = members[i];
@@ -68,18 +68,18 @@ didToday = false;
 async function SixAMDaily(){
     var hrs = getHour();
     //console.log("Current Time: " + hrs);
-    if(hrs == 21 && didToday == false){
+    if(hrs == 11 && didToday == false){
         TopAndLowerFive();
         didToday = true;
     }
-    else if(hrs != 21) didToday = false
+    else if(hrs != 11) didToday = false
 }
 
 async function main(){
+    await onDriveTeam();
     while(true){
-        //await SixAMDaily();
+        await SixAMDaily();
         //await sendScoutingMatches();
-        await onDriveTeam();
         //Runs Every 15s
         await sleep(15000);
     }
