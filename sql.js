@@ -1,11 +1,19 @@
 const sqlite3 = require('sqlite3').verbose();
 const tableName = "socialcredits";
 
-const db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE | sqlite3.OPEN_FULLMUTEX,(err) => {
+let db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE | sqlite3.OPEN_FULLMUTEX,(err) => {
     if(err) return console.error(err.message);
     console.log("Connected to SQL Database");
     db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
 })
+
+function Connect(){
+    db = new sqlite3.Database('./socialcredits.db',sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE | sqlite3.OPEN_FULLMUTEX,(err) => {
+        if(err) return console.error(err.message);
+        console.log("Re-Connected to SQL Database");
+        db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
+    })
+}
 
 async function getIDfromName(Name){
     return new Promise((resolve) => {
@@ -92,3 +100,4 @@ module.exports.changeSocialCreditsID = changeSocialCreditsID
 module.exports.Top = getTop
 module.exports.changeScoutMissed = changeScoutMissed;
 module.exports.getMostMissed = getMostMissed;
+module.exports.Connect = Connect;

@@ -5,7 +5,7 @@ require("dotenv").config();
 const http = require('http');
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
-const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits} = require('./sql');
+const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits, Connect} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
 const path = require('path')
@@ -19,8 +19,6 @@ if(fs.existsSync('./scouters.json')){
     let data = JSON.parse(fs.readFileSync('./scouters.json'));
     ScoutGroupA = data['A'];
     ScoutGroupB = data['B'];
-    console.log(ScoutGroupA);
-    console.log(ScoutGroupB)
 }
 
 async function getMatch(){
@@ -116,32 +114,40 @@ async function practiceModeCommands(){
     //SCOUT R1 R2 R3 B1 B2 B3:MATCHNUM
     //A 2846 2107 1924 2389 8237 7239:25
     let cmd = prompt('>');
+    console.log("running {"+cmd+"}.");
     let scoutnum = cmd.charAt(0);
     cmd = cmd.substring(2,cmd.length);
     let splited = cmd.split(":");
+    //console.log(splited)
     let teams = splited[0].split(" ");
+    //console.log(teams)
     let matchNum = splited[1];
+    //console.log(matchNum)
     
-    let Scouters = [];
+    let AorB = (scoutnum == "A" || scoutnum == "a");
     for(var i = 0; i < teams.length; i++){
         let team = teams[i];
-        Client.GiveLink(team,matchNum)
+        let scouter = (AorB ? ScoutGroupA[i] : ScoutGroupB[i]);
+        //console.log("Choose "+scouter+" For Team #" + team);
+        Client.GiveLink(scouter,team,matchNum);
     }
 }
 
 async function main(){
-    //await onDriveTeam();
+    practiceModeCommands();
+
+    /*
     while(true){
-        practiceModeCommands();
-        //await SixAMDaily();
-        //await sendScoutingMatches();
-        //Runs Every 15s
-        //await sleep(15000);
+        await SixAMDaily();
+        await sendScoutingMatches();
     }
+    */
 }
 
 
 async function init() {
+    Connect();
+    /*
     let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
@@ -149,6 +155,7 @@ async function init() {
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
     }
+    */
 
     main();
 }
