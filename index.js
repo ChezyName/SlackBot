@@ -105,43 +105,17 @@ async function SixAMDaily(){
         TopAndLowerFive();
         didToday = true;
     }
-    else if(hrs != 6 ) didToday = false
-}
-
-const prompt = require('prompt-sync')({sigint: true})
-async function practiceModeCommands(){
-    //BASIC COMMANDS
-    //SCOUT R1 R2 R3 B1 B2 B3:MATCHNUM
-    //A 2846 2107 1924 2389 8237 7239:25
-    let cmd = prompt('>');
-    console.log("running {"+cmd+"}.");
-    let scoutnum = cmd.charAt(0);
-    cmd = cmd.substring(2,cmd.length);
-    let splited = cmd.split(":");
-    //console.log(splited)
-    let teams = splited[0].split(" ");
-    //console.log(teams)
-    let matchNum = splited[1];
-    //console.log(matchNum)
-    
-    let AorB = (scoutnum == "A" || scoutnum == "a");
-    for(var i = 0; i < teams.length; i++){
-        let team = teams[i];
-        let scouter = (AorB ? ScoutGroupA[i] : ScoutGroupB[i]);
-        //console.log("Choose "+scouter+" For Team #" + team);
-        Client.GiveLink(scouter,team,matchNum);
-    }
+    else if(hrs != 6) didToday = false
 }
 
 async function main(){
-    //practiceModeCommands();
-
-    /*
     while(true){
-        await SixAMDaily();
-        await sendScoutingMatches();
+        //await SixAMDaily();
+        //await sendScoutingMatches();
+        await onDriveTeam();
+        //Runs Every 15s
+        await sleep(15000);
     }
-    */
 }
 
 
