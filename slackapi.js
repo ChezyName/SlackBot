@@ -1,6 +1,6 @@
 const { WebClient } = require('@slack/web-api');
 const cliProgress = require('cli-progress');
-const { getIDfromName, changeSocialCredits, changeScoutMissed } = require('./sql')
+const { getMostMissed, getIDfromName, changeSocialCredits, changeScoutMissed } = require('./sql')
 
 class SlackBot {
     constructor(AppID) {
@@ -72,7 +72,8 @@ class SlackBot {
             msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";
         }
 
-        //console.log("Printed MSG")
+        let worst = await getMostMissed();
+        msg += "Most Importantly, " + worst.name + " Has Missed Scouting " + worst.scoutmissed + "(DON'T LET IT HAPPEN AGAIN)";
         
 
         await this.SendMessage(ChannelID,msg);

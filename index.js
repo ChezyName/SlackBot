@@ -8,10 +8,36 @@ const TBA_API = require("./TBAAPI")
 const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
+const path = require('path')
 const {getHour,sleep} = require('./util');
 
 console.log("Server Started @ " + new Date().toUTCString());
 
+let ScoutGroupA = []
+let ScoutGroupB = []
+if(fs.existsSync('./scouters.json')){
+    let data = JSON.parse(fs.readFileSync('./scouters.json'));
+    ScoutGroupA = data['A'];
+    ScoutGroupB = data['B'];
+    console.log(ScoutGroupA);
+    console.log(ScoutGroupB)
+}
+
+async function getMatch(){
+    if(fs.existsSync('./match.data')){
+        let data = fs.readFileSync('./match.data');
+        console.log(data);
+        return parseInt(data);
+    }
+    else{
+        fs.writeFileSync('./match.data','0');
+        return 0;
+    }
+}
+
+async function UpdateMatch(number){
+    fs.writeFileSync('./match.data',toString(number));
+}
 
 const server = http.createServer((req, res) => {
     if(req.method == "POST"){
@@ -48,11 +74,15 @@ const TBA = new TBA_API(process.env.TBA_KEY,process.env.TEAM_KEY);
 
 async function TopAndLowerFive(){
     //await Client.SendMessage(process.env.ScoutingChannelID,`All Hail Our Glorous Leader, ${process.env.Leader}!`)
-    Top().then((data) => { Client.SendTop(process.env.ScoutingChannelID,data);});
+    Top().then((data) => { Client.SendTop(process.env.GeneralChannelID,data);});
 }
 
 async function onDriveTeam(){
-    TBA.MatchesWonLost();
+    let m = await getMatch();
+    console.log("LFF:",m);
+    let nm = await TBA.MatchesWonLost(m);
+    console.log("NMAHC:",nm);
+    UpdateMatch(nm);
 }
 
 async function sendScoutingMatches() {
@@ -60,7 +90,12 @@ async function sendScoutingMatches() {
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatch(currentEvent.key);
-        console.log(cMatch);
+        if(getHour() <= 12){
+            //Morning Shift
+        }
+        else{
+            //Afternoon Shift
+        }
     }
 }
 
@@ -68,20 +103,40 @@ didToday = false;
 async function SixAMDaily(){
     var hrs = getHour();
     //console.log("Current Time: " + hrs);
-    if(hrs == 11 && didToday == false){
+    if(hrs == 6 && didToday == false){
         TopAndLowerFive();
         didToday = true;
     }
-    else if(hrs != 11) didToday = false
+    else if(hrs != 6 ) didToday = false
+}
+
+const prompt = require('prompt-sync')({sigint: true})
+async function practiceModeCommands(){
+    //BASIC COMMANDS
+    //SCOUT R1 R2 R3 B1 B2 B3:MATCHNUM
+    //A 2846 2107 1924 2389 8237 7239:25
+    let cmd = prompt('>');
+    let scoutnum = cmd.charAt(0);
+    cmd = cmd.substring(2,cmd.length);
+    let splited = cmd.split(":");
+    let teams = splited[0].split(" ");
+    let matchNum = splited[1];
+    
+    let Scouters = [];
+    for(var i = 0; i < teams.length; i++){
+        let team = teams[i];
+        Client.GiveLink(team,matchNum)
+    }
 }
 
 async function main(){
-    await onDriveTeam();
+    //await onDriveTeam();
     while(true){
-        await SixAMDaily();
+        practiceModeCommands();
+        //await SixAMDaily();
         //await sendScoutingMatches();
         //Runs Every 15s
-        await sleep(15000);
+        //await sleep(15000);
     }
 }
 

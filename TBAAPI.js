@@ -7,7 +7,7 @@ const DriveTeamMembers = process.env.DriveTeamMembers.split(':');
 
 function gainPointsDrive(Points){
     for(var i = 0; i < DriveTeamMembers.length; i++){
-        console.log(DriveTeamMembers[i] + " : " + Points)
+        //console.log(DriveTeamMembers[i] + " : " + Points)
         changeSocialCredits(DriveTeamMembers[i],Points);
     }
 }
@@ -51,7 +51,7 @@ class TBA_API{
         let events = await this.getData("/team/"+this.team+"/events/"+year+"/simple");
         let nextEvents = await this.getData("/team/"+this.team+"/events/"+nextYear+"/simple");
         //console.log("\n our current events for "+year+" are:")
-        console.log(nextEvents);
+        //console.log(nextEvents);
         //console.log("\n");
         return events.concat(nextEvents);
     }
@@ -96,12 +96,20 @@ class TBA_API{
         return {blue: nBlue, red: nRed};
     }
 
-    async MatchesWonLost(){
+    async MatchesWonLost(MinMatch){
+        if(MinMatch == undefined) MinMatch = 0;
         let eventKey = await this.getCurrentEvent();
         let matches = await this.getOurMatches('2022mndu2');
+        
+        matches.sort(
+            (m1, m2) => (m1['match_number'] < m2['match_number']) ? -1 : 0
+        );
+
         let totalPoints = 0;
+        let finalMatch = 0;
         for(var i = 0; i < matches.length; i++){
             let match = matches[i];
+            if(match['match_number'] < MinMatch || match['comp_level'] == 'qf') return;
             if(!(match['winning_alliance'] == 'red' || match['winning_alliance'] == 'blue')) return;
             let teams = await this.getTeamFromMatch(match);
             if(match['winning_alliance'] == 'red'){
@@ -112,8 +120,11 @@ class TBA_API{
                 if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += parseInt(process.env.WIN);
                 else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += parseInt(process.env.LOSS);
             }
+            finalMatch = match['match_number'];
+            console.log("FM",finalMatch);
         }
         gainPointsDrive(totalPoints);
+        return finalMatch;
     }
 
     async getCurrentMatch(eventKey){
@@ -123,6 +134,7 @@ class TBA_API{
 
         for(let i = 0; i < matches.length; i++){
             let matchTime = matches[i].predicted_time;
+            console.log(matches[i])
             if((matchTime-15000) < timeMS && timeMS < (matchTime+15000)){
                 return lastMatch;
             }

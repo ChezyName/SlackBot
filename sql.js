@@ -12,7 +12,7 @@ async function getIDfromName(Name){
         db.each(`SELECT credit, name, id FROM ${tableName} WHERE name = '${Name}'`,
         function(err, row) {
             if(row != null && row.name != null && row.credit != null && row.id != null){
-                console.log(row.name,row.id);
+                //console.log(row.name,row.id);
                 resolve(row.id);
             }
         });
@@ -75,8 +75,20 @@ async function getTop(){
     })
 }
 
+async function getMostMissed(){
+    return new Promise((resolve) => {
+        db.each(`SELECT * from ${tableName} order by scoutmissed asc`,
+        function(err,row) {
+            if(row != null){
+                resolve(row);
+            }
+        },)
+    })
+}
+
 module.exports.getIDfromName = getIDfromName;
 module.exports.changeSocialCredits = changeSocialCredits
 module.exports.changeSocialCreditsID = changeSocialCreditsID
 module.exports.Top = getTop
 module.exports.changeScoutMissed = changeScoutMissed;
+module.exports.getMostMissed = getMostMissed;

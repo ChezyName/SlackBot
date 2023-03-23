@@ -31,6 +31,19 @@ DriveTeamMembers="DRIVE MEMBER A:DRIVE MEMBER B:DRIVE MEMBER C"
 ```
 > For each Drive Team Member add a `:` for the program to split / indicate the persons name
 
+**MAKE SURE YOU CREATE A `scouters.json` FILE!!**
+> Example Scouters JSON File
+``` json
+   {
+      "A": [
+         "NAME","NAME"
+      ],
+      "B": [
+         "NAME","NAME"
+      ]
+   }
+```
+
 # **Using GCP (Google Cloud Platform)**
 ## Init
 Open The GoogleCloudTerminal or SSH into it.
