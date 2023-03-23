@@ -143,3 +143,4 @@ class TBA_API{
 }
 
 module.exports = TBA_API
+module.exports.gainPointsDrive = gainPointsDrive;

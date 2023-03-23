@@ -5,7 +5,7 @@ require("dotenv").config();
 const http = require('http');
 const SlackBot = require("./slackapi");
 const TBA_API = require("./TBAAPI")
-const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits, Connect} = require('./sql');
+const {changeScoutMissed, Top, changeSocialCreditsID, changeSocialCredits} = require('./sql');
 const cliProgress = require('cli-progress');
 const fs = require('fs')
 const path = require('path')
@@ -134,7 +134,7 @@ async function practiceModeCommands(){
 }
 
 async function main(){
-    practiceModeCommands();
+    //practiceModeCommands();
 
     /*
     while(true){
@@ -146,8 +146,6 @@ async function main(){
 
 
 async function init() {
-    Connect();
-    /*
     let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
@@ -155,7 +153,11 @@ async function init() {
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
     }
-    */
+
+    //await changeSocialCredits("Sadiq Ahmed",999);
+    //await changeSocialCredits("Abdilaahi Muse",1250);
+    //await changeSocialCredits("Elinor Schense",1250);
+    //TBA_API.gainPointsDrive(-250)
 
     main();
 }
