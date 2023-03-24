@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'text/plain');
 
-        let str = "USERNAME : CREDIT VALUE @ " + (new Date().toLocaleTimeString("en-GB", { timeZone: "America/Chicago" })) + " CT.\n";
+        let str = "USERNAME : CREDIT VALUE @ " + (Date.now()) + ".\n";
         Top().then((members) => {
             for(var i = 0; i < members.length; i++){
                 var user = members[i];
@@ -83,6 +83,7 @@ async function sendScoutingMatches() {
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatchFromLast(currentEvent.key,matchCounter);
+        console.log(cMatch);
         if(cMatch == null || cMatch == undefined) return
         
         let scouts = getXRandomFromArray(6,getHour() <= 12 ? ScoutGroupA : ScoutGroupB)
@@ -97,7 +98,7 @@ async function sendScoutingMatches() {
         Client.GiveLink(scouts[3],teams.blue[0],cMatch['match_number']);
         Client.GiveLink(scouts[4],teams.blue[1],cMatch['match_number']);
         Client.GiveLink(scouts[5],teams.blue[2],cMatch['match_number']);
-        matchCounter = cMatch.match_number;
+        matchCounter = parseInt(cMatch.match_number);
     }
 }
 
@@ -124,6 +125,7 @@ async function main(){
 
 
 async function init() {
+    /*
     let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
@@ -131,11 +133,12 @@ async function init() {
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
     }   
+    */
 
     //BRUH
     changeSocialCredits("Abdilaahi Muse",250);
     changeSocialCredits("Elinor Schense",250);
-    TBA_API.gainPointsDrive(200);
+    TBA_API.gainPointsDrive(300);
 
     main();
 }

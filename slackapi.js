@@ -28,7 +28,7 @@ class SlackBot {
         this.DMPerson(Name,`You Are Required To Scout Team #${TeamNum} For Match #${MatchNum}\n${link}`);
         changeSocialCredits(Name,-process.env.BAD_BEHAVIOR);
         changeScoutMissed(Name,-1);
-        console.log(`Sent #${TeamNum}:${MatchNum} To ${Name}`)
+        //console.log(`Sent #${TeamNum}:${MatchNum} To ${Name}`)
     }
 
     async getMembersInChannel(ChannelID){

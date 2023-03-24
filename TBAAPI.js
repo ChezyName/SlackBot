@@ -139,16 +139,25 @@ class TBA_API{
 
     async getCurrentMatchFromLast(eventKey,lastUsableMatch){
         let matches = await this.getMatches(eventKey);
-        let lastMatch = matches[0];
-        let timeMS = Date.now();
+        let timeMS = new Date().getTime() / 1000;
+
+        matches.sort(
+            (m1, m2) => (m1['match_number'] < m2['match_number']) ? -1 : 0
+        );
 
         for(let i = 0; i < matches.length; i++){
-            let matchTime = matches[i].predicted_time;
-            //console.log(matches[i])
-            if((matchTime-15000) < timeMS && timeMS < (matchTime+15000) && match[i].match_number > lastUsableMatch){
-                return lastMatch;
+            let match = matches[i];
+            let matchTime = parseInt(match.predicted_time);
+
+            let RT = matchTime - timeMS
+            //console.log(RT + ": " + matchTime + " - " + timeMS);
+            //console.log(((matchTime-60000) < timeMS && timeMS < (matchTime+60000) ? "Y " : "X ") + (timeMS - matchTime) + " - " + match.match_number + "/" + lastUsableMatch)
+            if(RT > 0 && RT < 150 && match.match_number > lastUsableMatch){
+                return match;
             }
         }
+
+        return null;
     }
 }
 

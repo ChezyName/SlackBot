@@ -47,10 +47,12 @@ function changeScoutMissed(Name,AddValue){
 function changeSocialCredits(Name,Value){
     console.log("Changing " + Name + " By " + Value);
     db.run(`CREATE TABLE IF NOT EXISTS ${tableName} (credit INT, name CHAR, id CHAR, scoutmissed INT);`);
-    db.run(`INSERT INTO ${tableName}(credit,name)` 
+    
+    /*db.run(`INSERT INTO ${tableName}(credit,name)` 
     + `SELECT ${Value}, '${Name}'`
     + `WHERE NOT EXISTS(SELECT 1 FROM ${tableName} WHERE name = '${Name}');`);
-    
+    */
+
     db.each(`SELECT credit, name FROM ${tableName} WHERE name = '${Name}'`,
         function(err, row) {
             if(row != null && row.name != null && row.credit != null){
