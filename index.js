@@ -83,7 +83,7 @@ async function sendScoutingMatches() {
     if(currentEvent != null){
         //Match for Today
         let cMatch = await TBA.getCurrentMatchFromLast(currentEvent.key,matchCounter);
-        console.log(cMatch);
+        //console.log(cMatch);
         if(cMatch == null || cMatch == undefined) return
         
         //(getHour() <= 12)
@@ -116,11 +116,12 @@ async function SixAMDaily(){
 
 async function main(){
     while(true){
+        console.log("\n");
         await SixAMDaily();
         await sendScoutingMatches();
-        await onDriveTeam();
+        //await onDriveTeam();
         //Runs Every 5s
-        await sleep(5000);
+        //await sleep(5000);
     }
 }
 

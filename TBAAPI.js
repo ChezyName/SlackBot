@@ -150,7 +150,7 @@ class TBA_API{
             let matchTime = parseInt(match.predicted_time);
 
             let RT = matchTime - timeMS
-            //console.log(RT + ": " + matchTime + " - " + timeMS);
+            if(RT > -150 && RT < 800) console.log(parseInt(RT) + ": " + match.match_number);
             //console.log(((matchTime-60000) < timeMS && timeMS < (matchTime+60000) ? "Y " : "X ") + (timeMS - matchTime) + " - " + match.match_number + "/" + lastUsableMatch)
             if(RT > 0 && RT < 150 && match.match_number > lastUsableMatch){
                 return match;
