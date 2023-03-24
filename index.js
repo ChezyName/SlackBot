@@ -86,7 +86,8 @@ async function sendScoutingMatches() {
         console.log(cMatch);
         if(cMatch == null || cMatch == undefined) return
         
-        let scouts = getXRandomFromArray(6,getHour() <= 12 ? ScoutGroupA : ScoutGroupB)
+        //(getHour() <= 12)
+        let scouts = getXRandomFromArray(6,Boolean(Math.round(Math.random())) ? ScoutGroupA : ScoutGroupB)
         let teams = await TBA.getTeamFromMatch(cMatch);
         
         console.log("Giving Links Over For #"+cMatch['match_number'])
@@ -131,12 +132,7 @@ async function init() {
         let name = members[i].name;
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
-    }   
-
-    //BRUH
-    changeSocialCredits("Abdilaahi Muse",250);
-    changeSocialCredits("Elinor Schense",250);
-    TBA_API.gainPointsDrive(300);
+    }
 
     main();
 }
