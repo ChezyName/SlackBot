@@ -103,22 +103,11 @@ async function sendScoutingMatches() {
     }
 }
 
-didToday = false;
-async function SixAMDaily(){
-    var hrs = getHour();
-    //console.log("Current Time: " + hrs);
-    if(hrs == 6 && didToday == false){
-        TopAndLowerFive();
-        didToday = true;
-    }
-    else if(hrs != 6) didToday = false
-}
-
 lastHour = 0;
 async function HourlyTopTeams(){
     var hrs = getHour();
     //Between 9AM and 6PM
-    if(hrs > 9 && hrs < 18){
+    if(hrs >= 9 && hrs <= 18){
         if(lastHour == hrs) return;
         lastHour = hrs;
         let msg = await TBA.getTopTen();
@@ -126,11 +115,24 @@ async function HourlyTopTeams(){
     }
 }
 
+didToday = false;
+async function SixAMDaily(){
+    var hrs = getHour();
+    //console.log("Current Time: " + hrs);
+    if(hrs == 6 && didToday == false){
+        //TopAndLowerFive();
+        Client.SendMessage(process.env.GeneralChannelID,"Another Day, Another Match. Final Day For Us. Will I Die After This? Anyways Heres The Rankings For Today.")
+        HourlyTopTeams();
+        didToday = true;
+    }
+    else if(hrs != 6) didToday = false
+}
+
 async function main(){
     TBA.getTopTen();
     while(true){
         console.log("\n");
-        //await SixAMDaily();
+        await SixAMDaily();
         await sendScoutingMatches();
         await HourlyTopTeams();
         //Runs Every 5s
