@@ -125,7 +125,6 @@ async function main(){
 
 
 async function init() {
-    /*
     let members = await Client.getMembersInChannel(process.env.GeneralChannelID);
     for(let i = 0; i < members.length; i++){
         //console.log(user);
@@ -133,7 +132,6 @@ async function init() {
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
     }   
-    */
 
     //BRUH
     changeSocialCredits("Abdilaahi Muse",250);
