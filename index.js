@@ -121,7 +121,7 @@ async function main(){
         await sendScoutingMatches();
         //await onDriveTeam();
         //Runs Every 5s
-        //await sleep(5000);
+        await sleep(5000);
     }
 }
 
