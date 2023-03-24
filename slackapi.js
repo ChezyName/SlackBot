@@ -56,7 +56,8 @@ class SlackBot {
 
     async SendTop(ChannelID,Top){
         //Top 5 Users
-        let msg = "Good Morning <!here>\nDaily Most Compliant\n";
+        let msg = "First Real Day Of The Compotation, I Hope Everyone Got Plenty Of Sleep, Because It's Going To Be One Hella-of-a-day\n"
+        + "Good Morning <!here>\nDaily Most Compliant\n";
 
         for(let i = 0; i < 5; i++){
             msg += (i+1) + ".) " + Top[i].name + " : " + Top[i].credit + "\n";

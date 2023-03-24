@@ -21,22 +21,6 @@ if(fs.existsSync('./scouters.json')){
     ScoutGroupB = data['B'];
 }
 
-async function getMatch(){
-    if(fs.existsSync('./match.data')){
-        let data = fs.readFileSync('./match.data');
-        console.log(data);
-        return parseInt(data);
-    }
-    else{
-        fs.writeFileSync('./match.data','0');
-        return 0;
-    }
-}
-
-async function UpdateMatch(number){
-    fs.writeFileSync('./match.data',toString(number));
-}
-
 const server = http.createServer((req, res) => {
     if(req.method == "POST"){
         var body = "";
@@ -76,24 +60,44 @@ async function TopAndLowerFive(){
 }
 
 async function onDriveTeam(){
-    let m = await getMatch();
-    console.log("LFF:",m);
-    let nm = await TBA.MatchesWonLost(m);
-    console.log("NMAHC:",nm);
-    UpdateMatch(nm);
+    await TBA.MatchesWonLost();
 }
 
+function getXRandomFromArray(count,arr){
+    let answer = [], counter = 0;
+
+    while(counter < count){
+        let rand = arr[Math.floor(Math.random() * arr.length)];
+        if(!answer.some(an => an === rand)){
+            answer.push(rand);
+            counter++;
+        }
+    }
+
+    return answer;
+}
+
+let matchCounter = 0;
 async function sendScoutingMatches() {
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
         //Match for Today
-        let cMatch = await TBA.getCurrentMatch(currentEvent.key);
-        if(getHour() <= 12){
-            //Morning Shift
-        }
-        else{
-            //Afternoon Shift
-        }
+        let cMatch = await TBA.getCurrentMatchFromLast(currentEvent.key,matchCounter);
+        if(cMatch == null || cMatch == undefined) return
+        
+        let scouts = getXRandomFromArray(6,getHour() <= 12 ? ScoutGroupA : ScoutGroupB)
+        let teams = await TBA.getTeamFromMatch(cMatch);
+        
+        console.log("Giving Links Over For #"+cMatch['match_number'])
+
+        Client.GiveLink(scouts[0],teams.red[0],cMatch['match_number']);
+        Client.GiveLink(scouts[1],teams.red[1],cMatch['match_number']);
+        Client.GiveLink(scouts[2],teams.red[2],cMatch['match_number']);
+
+        Client.GiveLink(scouts[3],teams.blue[0],cMatch['match_number']);
+        Client.GiveLink(scouts[4],teams.blue[1],cMatch['match_number']);
+        Client.GiveLink(scouts[5],teams.blue[2],cMatch['match_number']);
+        matchCounter = cMatch.match_number;
     }
 }
 
@@ -110,11 +114,11 @@ async function SixAMDaily(){
 
 async function main(){
     while(true){
-        //await SixAMDaily();
-        //await sendScoutingMatches();
+        await SixAMDaily();
+        await sendScoutingMatches();
         await onDriveTeam();
-        //Runs Every 15s
-        await sleep(15000);
+        //Runs Every 5s
+        await sleep(5000);
     }
 }
 
@@ -126,12 +130,12 @@ async function init() {
         let name = members[i].name;
         if(members[i].id == null || members[i].id == 0 || members[i].id == undefined) return;
         changeSocialCreditsID(name,0,members[i].id);
-    }
+    }   
 
-    //await changeSocialCredits("Sadiq Ahmed",999);
-    //await changeSocialCredits("Abdilaahi Muse",1250);
-    //await changeSocialCredits("Elinor Schense",1250);
-    //TBA_API.gainPointsDrive(-250)
+    //BRUH
+    changeSocialCredits("Abdilaahi Muse",250);
+    changeSocialCredits("Elinor Schense",250);
+    TBA_API.gainPointsDrive(200);
 
     main();
 }

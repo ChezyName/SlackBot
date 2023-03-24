@@ -19,24 +19,27 @@ class TBA_API{
     }
 
     async getData(path=""){
-        const response = await await fetch('https://www.thebluealliance.com/api/v3'+path, {
+        const response = await fetch('https://www.thebluealliance.com/api/v3'+path, {
             method: 'get',
             headers: {'X-TBA-Auth-Key': this.key}
         });
-        return await response.json();
+        return response.json();
     }
 
     async getCurrentEvent(){
         let year = new Date().getFullYear();
         //console.log("Current Year is " + year);
-        let events = await this.getData("/team/"+'frc'+this.team+"/events/"+year+"/simple");
+        let events = await this.getData("/team/"+this.team+"/events/"+year+"/simple");
         //console.log("EVENTS: ")
         //console.log(events);
         for(let i = 0; i < events.length; i++){
             let event = events[i]
-            let startingDate = new Date(event.start_date)
-            let endingDate = new Date(event.end_date)
-            if(BetweenDates(startingDate,endingDate)){
+            let startingDate = new Date(event.start_date).getDay();
+            let endingDate = new Date(event.end_date).getDay();
+            let currentDate = new Date().getDay();
+            if(new Date(event.start_date).getMonth() != new Date().getMonth()) return;
+            //console.log(startingDate + " : " + currentDate + " : " + endingDate);
+            if(startingDate <= currentDate && currentDate <= endingDate){
                 return event;
             }
         }
@@ -96,11 +99,16 @@ class TBA_API{
         return {blue: nBlue, red: nRed};
     }
 
-    async MatchesWonLost(MinMatch){
-        if(MinMatch == undefined) MinMatch = 0;
+    async MatchesWonLost(){
+        if(this.matchesWL == undefined) this.matchesWL = 0;
         let eventKey = await this.getCurrentEvent();
-        let matches = await this.getOurMatches('2022mndu2');
+        if(eventKey == null || eventKey == undefined) return;
+
+        let matches = await this.getOurMatches(eventKey.key);
         
+        if(matches == null || matches == undefined) return;
+        //console.log(matches);
+
         matches.sort(
             (m1, m2) => (m1['match_number'] < m2['match_number']) ? -1 : 0
         );
@@ -109,8 +117,12 @@ class TBA_API{
         let finalMatch = 0;
         for(var i = 0; i < matches.length; i++){
             let match = matches[i];
-            if(match['match_number'] < MinMatch || match['comp_level'] == 'qf') return;
+            //console.log(match['match_number'])
+            if(match['comp_level'] == 'qf') return;
             if(!(match['winning_alliance'] == 'red' || match['winning_alliance'] == 'blue')) return;
+            let matchTime = matches[i].predicted_time;
+            let timeMS = Date.now();
+            if (!((matchTime-80000) < timeMS && timeMS < (matchTime+35000))) return;
             let teams = await this.getTeamFromMatch(match);
             if(match['winning_alliance'] == 'red'){
                 if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += parseInt(process.env.LOSS);
@@ -120,22 +132,20 @@ class TBA_API{
                 if(teams.blue[0] == this.team || teams.blue[1] == this.team || teams.blue[2] == this.team) totalPoints += parseInt(process.env.WIN);
                 else if(teams.red[0] == this.team || teams.red[1] == this.team || teams.red[2] == this.team) totalPoints += parseInt(process.env.LOSS);
             }
-            finalMatch = match['match_number'];
-            console.log("FM",finalMatch);
+            this.matchesWL = match.match_number;
         }
         gainPointsDrive(totalPoints);
-        return finalMatch;
     }
 
-    async getCurrentMatch(eventKey){
+    async getCurrentMatchFromLast(eventKey,lastUsableMatch){
         let matches = await this.getMatches(eventKey);
         let lastMatch = matches[0];
         let timeMS = Date.now();
 
         for(let i = 0; i < matches.length; i++){
             let matchTime = matches[i].predicted_time;
-            console.log(matches[i])
-            if((matchTime-15000) < timeMS && timeMS < (matchTime+15000)){
+            //console.log(matches[i])
+            if((matchTime-15000) < timeMS && timeMS < (matchTime+15000) && match[i].match_number > lastUsableMatch){
                 return lastMatch;
             }
         }
