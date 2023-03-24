@@ -114,12 +114,25 @@ async function SixAMDaily(){
     else if(hrs != 6) didToday = false
 }
 
+lastHour = 0;
+async function HourlyTopTeams(){
+    var hrs = getHour();
+    //Between 9AM and 6PM
+    if(hrs > 9 && hrs < 18){
+        if(lastHour == hrs) return;
+        lastHour = hrs;
+        let msg = await TBA.getTopTen();
+        await Client.SendMessage(process.env.GeneralChannelID,msg);
+    }
+}
+
 async function main(){
+    TBA.getTopTen();
     while(true){
         console.log("\n");
-        await SixAMDaily();
+        //await SixAMDaily();
         await sendScoutingMatches();
-        //await onDriveTeam();
+        await HourlyTopTeams();
         //Runs Every 5s
         await sleep(5000);
     }

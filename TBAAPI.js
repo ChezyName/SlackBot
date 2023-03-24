@@ -99,6 +99,25 @@ class TBA_API{
         return {blue: nBlue, red: nRed};
     }
 
+    async getTopTen(){
+        let event = await this.getCurrentEvent();
+        let topTeams = await this.getData('/event/'+event.key+'/rankings');
+        let msg = "Our Top Teams For " + event.name + ".\n"
+        for(let i = 0; i < 10; i++){
+            let team = topTeams.rankings[i];
+            let rank = team.rank;
+            let teamKey = team.team_key;
+
+            let teamInfo = await this.getTeamInfo(teamKey);
+            let name = teamInfo.nickname;
+            let number = teamInfo.team_number;
+
+            msg += rank + ". "+ (i != 10 ? " " : "") +" #" + number + " : " + name + "\n"
+        }
+
+        return msg;
+    }
+
     async MatchesWonLost(){
         if(this.matchesWL == undefined) this.matchesWL = 0;
         let eventKey = await this.getCurrentEvent();
