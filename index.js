@@ -14,11 +14,9 @@ const {getHour,sleep} = require('./util');
 console.log("Server Started @ " + new Date().toUTCString());
 
 let ScoutGroupA = []
-let ScoutGroupB = []
 if(fs.existsSync('./scouters.json')){
     let data = JSON.parse(fs.readFileSync('./scouters.json'));
-    ScoutGroupA = data['A'];
-    ScoutGroupB = data['B'];
+    ScoutGroupA = data['Scouters'];
 }
 
 const server = http.createServer((req, res) => {
@@ -87,7 +85,7 @@ async function sendScoutingMatches() {
         if(cMatch == null || cMatch == undefined) return
         
         //(getHour() <= 12)
-        let scouts = getXRandomFromArray(6,Boolean(Math.round(Math.random())) ? ScoutGroupA : ScoutGroupB)
+        let scouts = getXRandomFromArray(6,ScoutGroupA);
         let teams = await TBA.getTeamFromMatch(cMatch);
         
         console.log("Giving Links Over For #"+cMatch['match_number'])
