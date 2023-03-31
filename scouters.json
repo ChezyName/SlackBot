@@ -1,9 +1,10 @@
 {
-    "Scouters": [
-        "Lathan Turbes", "Rei Dickson", "Sanaa' Mckinney"
-        ,"Benjamin Lee",
-        "Seth MCDowell", "Fernando Paredes",
-        "Ben Aspinall", "Martin Milenov", "Ian Hauer",
-        "Madeline Davis"
+    "ScoutersA": [
+        "Cedar Longballa", "Sanaa' Mckinney", "JJ McKenzie",
+        "Martin Milenov", "August Rottach", "Madeline Davis"
+    ],
+    "ScoutersB": [
+        "Madeline Davis", "Ian Hauer", "Bella",
+        "Zane Levitz", "Peter Anderson", "Sanaa' Mckinney"
     ]
 }

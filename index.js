@@ -14,9 +14,11 @@ const {getHour,sleep} = require('./util');
 console.log("Server Started @ " + new Date().toUTCString());
 
 let ScoutGroupA = []
+let ScoutGroupB = []
 if(fs.existsSync('./scouters.json')){
     let data = JSON.parse(fs.readFileSync('./scouters.json'));
-    ScoutGroupA = data['Scouters'];
+    ScoutGroupA = data['ScoutersA'];
+    ScoutGroupB = data['ScoutersB'];
 }
 
 const server = http.createServer((req, res) => {
@@ -76,6 +78,7 @@ function getXRandomFromArray(count,arr){
 }
 
 let matchCounter = 0;
+let swap = 0;
 async function sendScoutingMatches() {
     let currentEvent = await TBA.getCurrentEvent();
     if(currentEvent != null){
@@ -85,6 +88,8 @@ async function sendScoutingMatches() {
         if(cMatch == null || cMatch == undefined) return
         
         //(getHour() <= 12)
+        let scouters = ScoutGroupA;
+        if(matchCounter - swap > 6) swap = matchCounter; scouters = ScoutGroupB;
         let scouts = getXRandomFromArray(6,ScoutGroupA);
         let teams = await TBA.getTeamFromMatch(cMatch);
         
@@ -119,8 +124,9 @@ async function SixAMDaily(){
     //console.log("Current Time: " + hrs);
     if(hrs == 6 && didToday == false){
         //TopAndLowerFive();
-        Client.SendMessage(process.env.GeneralChannelID,"Another Day, Another Match. Final Day For Us. Will I Die After This? Anyways Heres The Rankings For Today.")
-        HourlyTopTeams();
+        Client.SendMessage(process.env.GeneralChannelID,"Nothing to say.")
+        let msg = await TBA.getTopTen();
+        await Client.SendMessage(process.env.GeneralChannelID,msg);
         didToday = true;
     }
     else if(hrs != 6) didToday = false

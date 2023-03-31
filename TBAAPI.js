@@ -34,12 +34,13 @@ class TBA_API{
         //console.log(events);
         for(let i = 0; i < events.length; i++){
             let event = events[i]
-            let startingDate = new Date(event.start_date).getDay();
-            let endingDate = new Date(event.end_date).getDay();
-            let currentDate = new Date().getDay();
-            if(new Date(event.start_date).getMonth() != new Date().getMonth()) return;
-            //console.log(startingDate + " : " + currentDate + " : " + endingDate);
-            if(startingDate <= currentDate && currentDate <= endingDate){
+            let startingDate = new Date(event.start_date).getTime();
+            let endingDate = new Date(event.end_date).getTime();
+            let currentDate = new Date().getTime();
+            
+            console.log(event.name + "@ " + (startingDate/10000) + " : " + (currentDate/10000) + " : " + (endingDate/10000));
+            if((startingDate/10000) <= (currentDate/10000) && (currentDate/10000) <= (endingDate/10000)){
+                console.log("EVENT: " + event.name)
                 return event;
             }
         }
